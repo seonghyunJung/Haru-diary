@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
     <div class="container">
-        <form method="post">
+        <form action="{% url 'haru:diary_create' %}" method="post">
             {% csrf_token %}
             <!-- 오류표시 Start -->
             {% include 'form_errors.html' %}
             <!-- 오류표시 End -->
             <div class="mb-3">
-                <h5 class="mt-5">오늘 날짜</h5>
-                <textarea class="form-control" name="content" id="content" rows="20" placeholder="오늘 하루를 기록해주세요."></textarea>
+                <h5 class="mt-5">{{ today }}</h5>
+                <textarea class="form-control" name="content" id="content" rows="20" placeholder="오늘 하루를 기록해주세요.">{{ diary }}</textarea>
             </div>
             <div class="d-grid">
                 <button type="submit" class="btn btn-primary">저장하기</button>
