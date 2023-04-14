@@ -8,13 +8,13 @@
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="nav navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">일기쓰기</a>
+                    <a class="nav-link active" aria-current="page" href="{% url 'haru:index' %}">일기쓰기</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">캘린더</a>
+                    <a class="nav-link" href="{% url 'haru:calendar_page' %}">캘린더</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">통계확인</a>
+                    <a class="nav-link" href="{% url 'haru:graph_page' %}">통계확인</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="#">로그인</a>
