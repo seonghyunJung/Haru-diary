@@ -8,8 +8,8 @@ from .models import Diary
 def index(request):
     try:
         diary = Diary.objects.get(create_date=timezone.now().date())
-        context = {"diary": diary.content, "today": timezone.now().date()}
-        return render(request, "haru/diary_write.html", context)
+        context = {"diary": diary, "today": timezone.now().date()}
+        return render(request, "haru/diary_view.html", context)
     except:
         return render(
             request, "haru/diary_write.html", {"today": timezone.now().date()}
@@ -27,6 +27,20 @@ def diary_create(request):
     else:
         form = DiaryForm()
     context = {"form": form}
+    return render(request, "haru/diary_write.html", context)
+
+
+def diary_modify(request, diary_id):
+    diary = get_object_or_404(Diary, pk=diary_id)
+    if request.method == "POST":
+        form = DiaryForm(request.POST, instance=diary)
+        if form.is_valid():
+            diary = form.save(commit=False)
+            diary.save()
+            return redirect("haru:index")
+    else:
+        form = DiaryForm(instance=diary)
+    context = {"diary": diary, "form": form}
     return render(request, "haru/diary_write.html", context)
 
 

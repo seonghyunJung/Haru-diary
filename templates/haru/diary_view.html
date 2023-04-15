@@ -8,17 +8,11 @@
             <!-- 오류표시 End -->
             <div class="mb-3">
                 <h5 class="mt-5">{{ today }}</h5>
-                <textarea class="form-control" name="content" id="content" rows="20"
-                          placeholder="오늘 하루를 기록해주세요.">{{ diary.content }}</textarea>
+                <textarea class="form-control" name="content" id="content" rows="20" placeholder="오늘 하루를 기록해주세요.">{{ diary.content }}</textarea>
             </div>
             <div class="d-grid">
-                {% if diary %}
-                    <button type="submit" class="btn btn-primary">수정</button>
-                {% else %}
-                    <button type="submit" class="btn btn-primary">저장</button>
-                {% endif %}
-
-
+                <a href="{% url 'haru:diary_modify' diary.id %}" class="btn btn-primary">수정</a>
+                <button type="submit" class="btn btn-secondary">삭제</button>
             </div>
         </form>
     </div>
