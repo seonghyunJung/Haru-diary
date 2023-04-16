@@ -9,11 +9,10 @@ def index(request):
     try:
         diary = Diary.objects.get(create_date=timezone.now().date())
         context = {"diary": diary, "today": timezone.now().date()}
-        return render(request, "haru/diary_view.html", context)
+        # return render(request, "haru/diary_view.html", context)
+        return redirect("haru:diary_modify", diary_id=diary.id)
     except:
-        return render(
-            request, "haru/diary_write.html", {"today": timezone.now().date()}
-        )
+        return redirect("haru:diary_create")
 
 
 def diary_create(request):
@@ -23,10 +22,11 @@ def diary_create(request):
             diary = form.save(commit=False)
             diary.create_date = timezone.now().date()
             diary.save()
-            return redirect("haru:index")
+            context = {"diary": diary, "today": timezone.now().date()}
+            return render(request, "haru/diary_view.html", context)
     else:
         form = DiaryForm()
-    context = {"form": form}
+    context = {"form": form, "today": timezone.now().date()}
     return render(request, "haru/diary_write.html", context)
 
 
