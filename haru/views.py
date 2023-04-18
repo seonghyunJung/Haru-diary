@@ -8,7 +8,7 @@ from .models import Diary
 def index(request):
     try:
         diary = Diary.objects.get(create_date=timezone.now().date())
-        context = {"diary": diary, "today": timezone.now().date()}
+        # context = {"diary": diary, "today": timezone.now().date()}
         # return render(request, "haru/diary_view.html", context)
         return redirect("haru:diary_modify", diary_id=diary.id)
     except:
@@ -22,8 +22,8 @@ def diary_create(request):
             diary = form.save(commit=False)
             diary.create_date = timezone.now().date()
             diary.save()
-            context = {"diary": diary, "today": timezone.now().date()}
-            return render(request, "haru/diary_view.html", context)
+            # context = {"diary": diary, "today": timezone.now().date()}
+            return redirect("haru:diary_modify", diary_id=diary.id)
     else:
         form = DiaryForm()
     context = {"form": form, "today": timezone.now().date()}
