@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="#">Haru diary</a>
+        <a class="navbar-brand" href="{% url 'haru:index' %}">Haru diary</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -17,10 +17,16 @@
                     <a class="nav-link" href="{% url 'haru:graph_page' %}">통계확인</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="#">로그인</a>
+                    {% if user.is_authenticated %}
+                        <a class="nav-link" href="{% url 'account:logout' %}">{{ user.username }} (로그아웃)</a>
+                    {% else %}
+                        <a class="nav-link" href="{% url 'account:login' %}">로그인</a>
+                    {% endif %}
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="#">회원가입</a>
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'account:signup' %}" class="nav-link">회원가입</a>
+                    {% endif %}
                 </li>
             </ul>
         </div>

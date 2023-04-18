@@ -1,3 +1,5 @@
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
@@ -13,11 +15,13 @@ def index(request):
         return redirect("haru:diary_create")
 
 
+@login_required(login_url="account:login")
 def diary_create(request):
     if request.method == "POST":
         form = DiaryForm(request.POST)
         if form.is_valid():
             diary = form.save(commit=False)
+            diary.author = request.user
             diary.create_date = timezone.now().date()
             diary.save()
             return redirect("haru:index")
@@ -27,6 +31,7 @@ def diary_create(request):
     return render(request, "haru/diary_form.html", context)
 
 
+@login_required(login_url="account:login")
 def diary_modify(request, diary_id):
     diary = get_object_or_404(Diary, pk=diary_id)
     if request.method == "POST":
@@ -41,6 +46,7 @@ def diary_modify(request, diary_id):
     return render(request, "haru/diary_form.html", context)
 
 
+@login_required(login_url="account:login")
 def diary_delete(request, diary_id):
     diary = get_object_or_404(Diary, pk=diary_id)
     diary.delete()
