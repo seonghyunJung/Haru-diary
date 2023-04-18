@@ -8,8 +8,6 @@ from .models import Diary
 def index(request):
     try:
         diary = Diary.objects.get(create_date=timezone.now().date())
-        # context = {"diary": diary, "today": timezone.now().date()}
-        # return render(request, "haru/diary_view.html", context)
         return redirect("haru:diary_modify", diary_id=diary.id)
     except:
         return redirect("haru:diary_create")
@@ -22,12 +20,11 @@ def diary_create(request):
             diary = form.save(commit=False)
             diary.create_date = timezone.now().date()
             diary.save()
-            # context = {"diary": diary, "today": timezone.now().date()}
-            return redirect("haru:diary_modify", diary_id=diary.id)
+            return redirect("haru:index")
     else:
         form = DiaryForm()
-    context = {"form": form, "today": timezone.now().date()}
-    return render(request, "haru/diary_write.html", context)
+    context = {"form": form, "date": timezone.now().date()}
+    return render(request, "haru/diary_form.html", context)
 
 
 def diary_modify(request, diary_id):
@@ -40,8 +37,14 @@ def diary_modify(request, diary_id):
             return redirect("haru:index")
     else:
         form = DiaryForm(instance=diary)
-    context = {"diary": diary, "form": form}
-    return render(request, "haru/diary_write.html", context)
+    context = {"form": form, "diary": diary, "date": diary.create_date}
+    return render(request, "haru/diary_form.html", context)
+
+
+def diary_delete(request, diary_id):
+    diary = get_object_or_404(Diary, pk=diary_id)
+    diary.delete()
+    return redirect("haru:index")
 
 
 def calendar_page(request):

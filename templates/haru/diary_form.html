@@ -7,14 +7,14 @@
             {% include 'form_errors.html' %}
             <!-- 오류표시 End -->
             <div class="mb-3">
-                <h5 class="mt-5">{{ today }}</h5>
+                <h5 class="mt-5">{{ date }}</h5>
                 <textarea class="form-control" name="content" id="content" rows="20"
-                          placeholder="오늘 하루를 기록해주세요.">{{ diary.content }}</textarea>
+                          placeholder="오늘 하루를 기록해주세요.">{{ form.content.value|default_if_none:'' }}</textarea>
             </div>
             <div class="d-grid">
-                {% if diary %}
+                {% if form.content.value %}
                     <button type="submit" class="btn btn-primary">수정</button>
-                    <button type="submit" class="btn btn-secondary">삭제</button>
+                    <a href="{% url 'haru:diary_delete' diary.id %}" class="btn btn-secondary">삭제</a>
                 {% else %}
                     <button type="submit" class="btn btn-primary">저장</button>
                 {% endif %}
