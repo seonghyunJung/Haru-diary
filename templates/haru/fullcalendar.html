@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+        $(document).ready(function () {
+            const calendar = $('#calendar').fullCalendar({
+                events: '/haru/all_diaries',
+                {#selectable: true,#}
+                {#selectHelper: true,#}
+                {#editable: true,#}
+                {#eventLimit: true,#}
+                showNonCurrentDates: false,
+                contentHeight: 600,
+                eventClick: function (event) {
+                    const id = event.id;
+                    $(location).prop('href', `http://localhost:8000/haru/diary/modify/${id}`);
+                }
+            });
+        })
+    </script>
+{% endblock %}
