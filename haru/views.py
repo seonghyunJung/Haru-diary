@@ -16,22 +16,23 @@ def index(request):
         )
         return redirect("haru:diary_modify", diary_id=diary.id)
     except:
-        return redirect("haru:diary_create", date=timezone.now().date())
+        return redirect("haru:diary_create")
 
 
 @login_required(login_url="account:login")
-def diary_create(request, date):
+def diary_create(request):
     if request.method == "POST":
         form = DiaryForm(request.POST)
         if form.is_valid():
             diary = form.save(commit=False)
             diary.author = request.user
-            diary.create_date = date
+            diary.create_date = timezone.now().date()
             diary.save()
-            # return redirect("haru:index")
+            return redirect("haru:diary_modify", diary_id=diary.id)
+
     else:
         form = DiaryForm()
-    context = {"form": form, "date": date}
+    context = {"form": form, "date": timezone.now().date()}
     return render(request, "haru/diary_form.html", context)
 
 
