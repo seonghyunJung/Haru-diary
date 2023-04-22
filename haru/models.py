@@ -8,3 +8,14 @@ class Diary(models.Model):
     )
     content = models.TextField()
     create_date = models.DateField()
+
+    # 감정 필드
+    neutral = models.FloatField()
+    happiness = models.FloatField()
+    sadness = models.FloatField()
+    angry = models.FloatField()
+    disgust = models.FloatField()
+    fear = models.FloatField()
+    surprise = models.FloatField()
+    primary_emotion = models.CharField(max_length=15)
+    secondary_emotion = models.CharField(max_length=15)

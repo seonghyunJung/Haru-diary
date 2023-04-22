@@ -1,3 +1,6 @@
+import requests
+import json
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -27,6 +30,28 @@ def diary_create(request):
             diary = form.save(commit=False)
             diary.author = request.user
             diary.create_date = timezone.now().date()
+
+            # request 요청으로 감성분석 모델로부터 감정분석 값 반환
+            url = "http://15.165.255.212:50512/Diary"
+            obj = {"Text": diary.content}
+            emotion = json.loads(requests.post(url, json=obj).text)
+            diary.neutral = emotion["neutral"]
+            diary.happiness = emotion["happiness"]
+            diary.sadness = emotion["sadness"]
+            diary.angry = emotion["angry"]
+            diary.disgust = emotion["disgust"]
+            diary.fear = emotion["fear"]
+            diary.surprise = emotion["surprise"]
+
+            # 주요감정 순위별 정렬
+            emotion.pop("sentence")
+            emotion_rank = sorted(emotion, key=lambda x: emotion[x], reverse=True)
+            diary.primary_emotion = (
+                emotion_rank[0] if emotion_rank[0] != ("neutral") else emotion_rank[1]
+            )
+            diary.secondary_emotion = (
+                emotion_rank[1] if emotion_rank[1] != ("neutral") else emotion_rank[2]
+            )
             diary.save()
             return redirect("haru:diary_modify", diary_id=diary.id)
 
@@ -43,10 +68,46 @@ def diary_modify(request, diary_id):
         form = DiaryForm(request.POST, instance=diary)
         if form.is_valid():
             diary = form.save(commit=False)
+
+            # request 요청으로 감성분석 모델로부터 감정분석 값 반환
+            url = "http://15.165.255.212:50512/Diary"
+            obj = {"Text": diary.content}
+            emotion = json.loads(requests.post(url, json=obj).text)
+            diary.neutral = emotion["neutral"]
+            diary.happiness = emotion["happiness"]
+            diary.sadness = emotion["sadness"]
+            diary.angry = emotion["angry"]
+            diary.disgust = emotion["disgust"]
+            diary.fear = emotion["fear"]
+            diary.surprise = emotion["surprise"]
+
+            # 주요감정 순위별 정렬
+            emotion.pop("sentence")
+            emotion_rank = sorted(emotion, key=lambda x: emotion[x], reverse=True)
+            diary.primary_emotion = (
+                emotion_rank[0] if emotion_rank[0] != ("neutral") else emotion_rank[1]
+            )
+            diary.secondary_emotion = (
+                emotion_rank[1] if emotion_rank[1] != ("neutral") else emotion_rank[2]
+            )
             diary.save()
     else:
         form = DiaryForm(instance=diary)
-    context = {"form": form, "diary": diary, "date": diary.create_date}
+
+    emotion_emojis = {
+        "happiness": "😊",
+        "sadness": "😭",
+        "angry": "😡",
+        "disgust": "🤮",
+        "fear": "😨",
+        "surprise": "😳",
+    }
+    context = {
+        "form": form,
+        "diary": diary,
+        "date": diary.create_date,
+        "primary_emotion": emotion_emojis[diary.primary_emotion],
+    }
     return render(request, "haru/diary_form.html", context)
 
 
@@ -68,10 +129,18 @@ def calendar_page(request):
 def all_diaries(request):
     all_diaries = Diary.objects.filter(author_id=request.user.id)
     out = []
+    emotion_emojis = {
+        "happiness": "😊",
+        "sadness": "😭",
+        "angry": "😡",
+        "disgust": "🤮",
+        "fear": "😨",
+        "surprise": "😳",
+    }
     for diary in all_diaries:
         out.append(
             {
-                "title": diary.content,
+                "title": emotion_emojis[diary.primary_emotion],
                 "id": diary.id,
                 "date": diary.create_date,
             }
