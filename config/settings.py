@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # third apps
+    "debug_toolbar",
     # local apps
     "account",
     "haru",
@@ -71,6 +72,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -154,3 +156,10 @@ LOGIN_REDIRECT_URL = "/"
 
 # 로그아웃시 이동하는 URL
 LOGOUT_REDIRECT_URL = "/"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]

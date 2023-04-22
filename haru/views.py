@@ -15,7 +15,8 @@ from .models import Diary
 def index(request):
     try:
         diary = Diary.objects.get(
-            author_id=request.user.id, create_date=timezone.now().date()
+            author_id=request.user.id,
+            create_date=timezone.localdate(),
         )
         return redirect("haru:diary_modify", diary_id=diary.id)
     except:
@@ -29,7 +30,7 @@ def diary_create(request):
         if form.is_valid():
             diary = form.save(commit=False)
             diary.author = request.user
-            diary.create_date = timezone.now().date()
+            diary.create_date = timezone.localdate()
 
             # request 요청으로 감성분석 모델로부터 감정분석 값 반환
             url = "http://15.165.255.212:50512/Diary"
@@ -57,7 +58,7 @@ def diary_create(request):
 
     else:
         form = DiaryForm()
-    context = {"form": form, "date": timezone.now().date()}
+    context = {"form": form, "date": timezone.localdate()}
     return render(request, "haru/diary_form.html", context)
 
 
@@ -140,9 +141,10 @@ def all_diaries(request):
     for diary in all_diaries:
         out.append(
             {
-                "title": emotion_emojis[diary.primary_emotion],
+                # "title": emotion_emojis[diary.primary_emotion],
                 "id": diary.id,
                 "date": diary.create_date,
+                "imageurl": f"../../media/emoji/images/{diary.primary_emotion}.png",
             }
         )
 

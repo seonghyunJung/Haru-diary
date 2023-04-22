@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div id="calendar"></div>
+                <div class="mt-2" id="calendar"></div>
             </div>
         </div>
     </div>
@@ -18,11 +18,21 @@
                 {#editable: true,#}
                 {#eventLimit: true,#}
                 showNonCurrentDates: false,
-                contentHeight: 600,
+                contentHeight: 700,
+                backgroundColor: '#378006',
                 eventClick: function (event) {
                     const id = event.id;
                     $(location).prop('href', `http://localhost:8000/haru/diary/modify/${id}`);
-                }
+                },
+                eventRender: function (event, eventElement) {
+                    if (event.imageurl) {
+                        eventElement.find("span.fc-title").prepend("<center><img src='" + event.imageurl + "' width='35%' height='35%'><center>");
+                        eventElement.css({
+                            'background-color': 'white',
+                            'border-color': 'white',
+                        });
+                    }
+                },
             });
         })
     </script>
