@@ -19,3 +19,11 @@ class Diary(models.Model):
     surprise = models.FloatField()
     primary_emotion = models.CharField(max_length=15)
     secondary_emotion = models.CharField(max_length=15)
+
+
+class Emoji(models.Model):
+    emotion = models.CharField(max_length=15)
+    photo = models.ImageField(upload_to="emoji/images", blank=True)
+
+    def __str__(self):
+        return f"{self.emotion}.png"
