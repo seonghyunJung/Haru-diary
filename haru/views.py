@@ -3,6 +3,7 @@ import json
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -152,4 +153,58 @@ def all_diaries(request):
 
 
 def graph_page(request):
-    return render(request, "haru/statistics.html", {})
+    diaries = Diary.objects.filter(author_id=request.user.id)
+    neutral = diaries.filter(neutral__gt=0.0).aggregate(Sum("neutral"))
+    neutral = (
+        neutral["neutral__sum"] / diaries.count() if neutral["neutral__sum"] else 0.0
+    )
+    neutral *= 100
+
+    happiness = diaries.filter(happiness__gt=0.0).aggregate(Sum("happiness"))
+    happiness = (
+        happiness["happiness__sum"] / diaries.count()
+        if happiness["happiness__sum"]
+        else 0.0
+    )
+    happiness *= 100
+
+    sadness = diaries.filter(sadness__gt=0.0).aggregate(Sum("sadness"))
+    sadness = (
+        sadness["sadness__sum"] / diaries.count() if sadness["sadness__sum"] else 0.0
+    )
+    sadness *= 100
+
+    angry = diaries.filter(angry__gt=0.0).aggregate(Sum("angry"))
+    angry = angry["angry__sum"] / diaries.count() if angry["angry__sum"] else 0.0
+    angry *= 100
+
+    disgust = diaries.filter(disgust__gt=0.0).aggregate(Sum("disgust"))
+    disgust = (
+        disgust["disgust__sum"] / diaries.count() if disgust["disgust__sum"] else 0.0
+    )
+    disgust *= 100
+
+    fear = diaries.filter(fear__gt=0.0).aggregate(Sum("fear"))
+    fear = fear["fear__sum"] / diaries.count() if fear["fear__sum"] else 0.0
+    fear *= 100
+
+    surprise = diaries.filter(surprise__gt=0.0).aggregate(Sum("surprise"))
+    surprise = (
+        surprise["surprise__sum"] / diaries.count()
+        if surprise["surprise__sum"]
+        else 0.0
+    )
+    surprise *= 100
+
+    statistics = {
+        "neutral": neutral,
+        "happiness": happiness,
+        "sadness": sadness,
+        "angry": angry,
+        "disgust": disgust,
+        "fear": fear,
+        "surprise": surprise,
+    }
+
+    context = {"statistics": json.dumps(statistics)}
+    return render(request, "haru/statistics.html", context)
