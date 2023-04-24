@@ -1,6 +1,7 @@
 import requests
 import json
 
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
@@ -152,59 +153,108 @@ def all_diaries(request):
     return JsonResponse(out, safe=False)
 
 
+@csrf_exempt
+@login_required(login_url="account:login")
 def graph_page(request):
-    diaries = Diary.objects.filter(author_id=request.user.id)
-    neutral = diaries.filter(neutral__gt=0.0).aggregate(Sum("neutral"))
-    neutral = (
-        neutral["neutral__sum"] / diaries.count() if neutral["neutral__sum"] else 0.0
-    )
-    neutral *= 100
+    if request.method == "POST":
+        range = json.loads(request.body)
+        diaries = Diary.objects.filter(
+            author_id=request.user.id, create_date__range=[range["start"], range["end"]]
+        )
 
-    happiness = diaries.filter(happiness__gt=0.0).aggregate(Sum("happiness"))
-    happiness = (
-        happiness["happiness__sum"] / diaries.count()
-        if happiness["happiness__sum"]
-        else 0.0
-    )
-    happiness *= 100
+        neutral = diaries.filter(neutral__gt=0.0).aggregate(Sum("neutral"))
+        neutral = (
+            neutral["neutral__sum"] / diaries.count()
+            if neutral["neutral__sum"]
+            else 0.0
+        )
+        neutral *= 100
 
-    sadness = diaries.filter(sadness__gt=0.0).aggregate(Sum("sadness"))
-    sadness = (
-        sadness["sadness__sum"] / diaries.count() if sadness["sadness__sum"] else 0.0
-    )
-    sadness *= 100
+        happiness = diaries.filter(happiness__gt=0.0).aggregate(Sum("happiness"))
+        happiness = (
+            happiness["happiness__sum"] / diaries.count()
+            if happiness["happiness__sum"]
+            else 0.0
+        )
+        happiness *= 100
 
-    angry = diaries.filter(angry__gt=0.0).aggregate(Sum("angry"))
-    angry = angry["angry__sum"] / diaries.count() if angry["angry__sum"] else 0.0
-    angry *= 100
+        sadness = diaries.filter(sadness__gt=0.0).aggregate(Sum("sadness"))
+        sadness = (
+            sadness["sadness__sum"] / diaries.count()
+            if sadness["sadness__sum"]
+            else 0.0
+        )
+        sadness *= 100
 
-    disgust = diaries.filter(disgust__gt=0.0).aggregate(Sum("disgust"))
-    disgust = (
-        disgust["disgust__sum"] / diaries.count() if disgust["disgust__sum"] else 0.0
-    )
-    disgust *= 100
+        angry = diaries.filter(angry__gt=0.0).aggregate(Sum("angry"))
+        angry = angry["angry__sum"] / diaries.count() if angry["angry__sum"] else 0.0
+        angry *= 100
 
-    fear = diaries.filter(fear__gt=0.0).aggregate(Sum("fear"))
-    fear = fear["fear__sum"] / diaries.count() if fear["fear__sum"] else 0.0
-    fear *= 100
+        disgust = diaries.filter(disgust__gt=0.0).aggregate(Sum("disgust"))
+        disgust = (
+            disgust["disgust__sum"] / diaries.count()
+            if disgust["disgust__sum"]
+            else 0.0
+        )
+        disgust *= 100
 
-    surprise = diaries.filter(surprise__gt=0.0).aggregate(Sum("surprise"))
-    surprise = (
-        surprise["surprise__sum"] / diaries.count()
-        if surprise["surprise__sum"]
-        else 0.0
-    )
-    surprise *= 100
+        fear = diaries.filter(fear__gt=0.0).aggregate(Sum("fear"))
+        fear = fear["fear__sum"] / diaries.count() if fear["fear__sum"] else 0.0
+        fear *= 100
 
-    statistics = {
-        "neutral": neutral,
-        "happiness": happiness,
-        "sadness": sadness,
-        "angry": angry,
-        "disgust": disgust,
-        "fear": fear,
-        "surprise": surprise,
-    }
+        surprise = diaries.filter(surprise__gt=0.0).aggregate(Sum("surprise"))
+        surprise = (
+            surprise["surprise__sum"] / diaries.count()
+            if surprise["surprise__sum"]
+            else 0.0
+        )
+        surprise *= 100
 
-    context = {"statistics": json.dumps(statistics)}
-    return render(request, "haru/statistics.html", context)
+        statistics = {
+            "neutral": neutral,
+            "happiness": happiness,
+            "sadness": sadness,
+            "angry": angry,
+            "disgust": disgust,
+            "fear": fear,
+            "surprise": surprise,
+        }
+
+        context = {"statistics": json.dumps(statistics)}
+        # print(context)
+        # return render(request, "haru/statistics.html", context)
+        return JsonResponse(context, status=200)
+
+    else:
+        try:
+            diary = Diary.objects.get(
+                author_id=request.user.id, create_date=timezone.localdate()
+            )
+            neutral = diary.neutral * 100
+            happiness = diary.happiness * 100
+            sadness = diary.sadness * 100
+            angry = diary.angry * 100
+            disgust = diary.disgust * 100
+            fear = diary.fear * 100
+            surprise = diary.surprise * 100
+        except:
+            neutral = 0
+            happiness = 0
+            sadness = 0
+            angry = 0
+            disgust = 0
+            fear = 0
+            surprise = 0
+
+        statistics = {
+            "neutral": neutral,
+            "happiness": happiness,
+            "sadness": sadness,
+            "angry": angry,
+            "disgust": disgust,
+            "fear": fear,
+            "surprise": surprise,
+        }
+
+        context = {"statistics": json.dumps(statistics)}
+        return render(request, "haru/statistics.html", context)

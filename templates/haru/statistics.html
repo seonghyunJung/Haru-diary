@@ -1,67 +1,204 @@
 {% extends 'base.html' %}
 {% block content %}
     <div class="container">
+        <div class="">
+            <span>🗓️</span>
+            <input type="text" name="daterange" id="txtDate" style="text-align: center;"/>
+        </div>
         <canvas id="myChart"></canvas>
     </div>
 {% endblock %}
 {% block script %}
     <script type="text/javascript">
-        var ctx = document.getElementById('myChart');
-        let statistics = JSON.parse("{{ statistics | escapejs }}");
-        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['neutral', 'happy', 'sad', 'angry', 'disgust', 'fear', 'surprise'],
-                datasets: [{
-                    label: '감정 통계',
-                    data: [statistics["neutral"], statistics["happiness"], statistics["sadness"], statistics["angry"], statistics["disgust"], statistics["fear"], statistics["surprise"]],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            min: 0,
-                            max: 100,
-                            callback: function (value) {
-                                return value + "%"
+        $(function () {
+            var ctx = document.getElementById('myChart');
+            let statistics = JSON.parse("{{ statistics | escapejs }}");
+            let myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['neutral', 'happy', 'sad', 'angry', 'disgust', 'fear', 'surprise'],
+                    datasets: [{
+                        label: '감정 통계',
+                        data: [statistics["neutral"], statistics["happiness"], statistics["sadness"], statistics["angry"], statistics["disgust"], statistics["fear"], statistics["surprise"]],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                max: 100,
+                                callback: function (value) {
+                                    return value + "%"
+                                }
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: "Percentage"
                             }
-                        },
-                        scaleLabel: {
-                            display: true,
-                            labelString: "Percentage"
-                        }
-                    }]
+                        }]
+                    }
                 }
-            }
+            });
+            $('#txtDate').daterangepicker({
+                locale: {
+                    "separator": " ~ ",                     // 시작일시와 종료일시 구분자
+                    "format": 'YYYY-MM-DD',     // 일시 노출 포맷
+                    "applyLabel": "확인",                    // 확인 버튼 텍스트
+                    "cancelLabel": "취소",                   // 취소 버튼 텍스트
+                    "daysOfWeek": ["일", "월", "화", "수", "목", "금", "토"],
+                    "monthNames": ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"]
+                },
+                showDropdowns: true,                     // 년월 수동 설정 여부
+                {#autoApply: true,                         // 확인/취소 버튼 사용여부#}
+                timePicker24Hour: true,                  // 24시간 노출 여부(ex> true : 23:50, false : PM 11:50)
+                timePickerSeconds: true,                 // 초 노출 여부
+            }, function (start, end, label) {
+                data = {
+                    "start": start.format('YYYY-MM-DD'),
+                    "end": end.format('YYYY-MM-DD'),
+                };
+                $.ajax({
+                    url: '{% url "haru:graph_page" %}',
+                    type: 'POST',
+                    dataType: "json",
+                    data: JSON.stringify(data),
+                    success: function (json) {
+                        statistics = JSON.parse(json["statistics"])
+                        let myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: ['neutral', 'happy', 'sad', 'angry', 'disgust', 'fear', 'surprise'],
+                                datasets: [{
+                                    label: '감정 통계',
+                                    data: [statistics["neutral"], statistics["happiness"], statistics["sadness"], statistics["angry"], statistics["disgust"], statistics["fear"], statistics["surprise"]],
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(255, 206, 86, 0.2)',
+                                        'rgba(75, 192, 192, 0.2)',
+                                        'rgba(153, 102, 255, 0.2)',
+                                        'rgba(255, 159, 64, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            min: 0,
+                                            max: 100,
+                                            callback: function (value) {
+                                                return value + "%"
+                                            }
+                                        },
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: "Percentage"
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    },
+                    error: function (xhr, errmsg, err) {
+                        {#console.log(xhr.status + ": " + xhr.responseText);#}
+                        console.log(err);
+                        console.log(data);
+                    }
+                });
+                /*
+                .done(function (data) {
+                    alert("결제가 성공적으로 진행되었습니다.");
+                }).fail(function (data) {
+                    alert("결제중 서버와의 통신에 문제가 발생하였습니다.\n원인: " + data.value);
+                });
+                 */
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            });
+
             /*
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                }
-            }
-            */
-        });
+           $('#txtDate').on('show.daterangepicker', function (ev, picker) {
+               $(".yearselect").css("float", "left");
+               $(".monthselect").css("float", "right");
+               $(".cancelBtn").css("float", "right");
+           });
+             */
+        })
     </script>
+
+    {#    <script type="text/javascript">#}
+    {#        var ctx = document.getElementById('myChart');#}
+    {#        let statistics = JSON.parse("{{ statistics | escapejs }}");#}
+    {#        var myChart = new Chart(ctx, {#}
+    {#            type: 'bar',#}
+    {#            data: {#}
+    {#                labels: ['neutral', 'happy', 'sad', 'angry', 'disgust', 'fear', 'surprise'],#}
+    {#                datasets: [{#}
+    {#                    label: '감정 통계',#}
+    {#                    data: [statistics["neutral"], statistics["happiness"], statistics["sadness"], statistics["angry"], statistics["disgust"], statistics["fear"], statistics["surprise"]],#}
+    {#                    backgroundColor: [#}
+    {#                        'rgba(255, 99, 132, 0.2)',#}
+    {#                        'rgba(54, 162, 235, 0.2)',#}
+    {#                        'rgba(255, 206, 86, 0.2)',#}
+    {#                        'rgba(75, 192, 192, 0.2)',#}
+    {#                        'rgba(153, 102, 255, 0.2)',#}
+    {#                        'rgba(255, 159, 64, 0.2)'#}
+    {#                    ],#}
+    {#                    borderColor: [#}
+    {#                        'rgba(255, 99, 132, 1)',#}
+    {#                        'rgba(54, 162, 235, 1)',#}
+    {#                        'rgba(255, 206, 86, 1)',#}
+    {#                        'rgba(75, 192, 192, 1)',#}
+    {#                        'rgba(153, 102, 255, 1)',#}
+    {#                        'rgba(255, 159, 64, 1)'#}
+    {#                    ],#}
+    {#                    borderWidth: 1#}
+    {#                }]#}
+    {#            },#}
+    {#            options: {#}
+    {#                scales: {#}
+    {#                    yAxes: [{#}
+    {#                        ticks: {#}
+    {#                            min: 0,#}
+    {#                            max: 100,#}
+    {#                            callback: function (value) {#}
+    {#                                return value + "%"#}
+    {#                            }#}
+    {#                        },#}
+    {#                        scaleLabel: {#}
+    {#                            display: true,#}
+    {#                            labelString: "Percentage"#}
+    {#                        }#}
+    {#                    }]#}
+    {#                }#}
+    {#            }#}
+    {#        });#}
+    {#    </script>#}
 {% endblock %}
