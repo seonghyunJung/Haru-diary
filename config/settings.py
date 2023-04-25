@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # third apps
+    "bootstrap_datepicker_plus",
     "debug_toolbar",
     # local apps
     "account",
