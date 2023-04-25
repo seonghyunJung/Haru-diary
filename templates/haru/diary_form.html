@@ -9,7 +9,7 @@
             <div class="mb-3">
                 <h4 class="mt-5">{{ date }}</h4>
                 {% if primary_emotion %}<h5 style="color: gray;">감정분석 결과 : <span style="font-size:200%">{{ primary_emotion }}</span></h5>{% endif %}
-                <textarea class="form-control" name="content" id="content" rows="20"
+                <textarea class="form-control" name="content" id="content" rows="20" style="resize: none"
                           placeholder="오늘 하루를 기록해주세요.">{{ form.content.value|default_if_none:'' }}</textarea>
             </div>
             <div class="d-grid">
