@@ -28,9 +28,19 @@
             </div>
         </form>
     </div>
+    <div id="overlay" style="display:none;">
+        <div class="spinner"></div>
+        <br/>
+        Loading...
+    </div>
 {% endblock %}
 {% block script %}
     <script type="text/javascript">
+        $(document).ready(function () {
+            $('button').click(function () {
+                $('#overlay').fadeIn().delay(2000).fadeOut();
+            });
+        });
         const delete_elements = document.getElementsByClassName("delete");
         Array.from(delete_elements).forEach(function (element) {
             element.addEventListener('click', function () {
