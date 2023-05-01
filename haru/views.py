@@ -47,7 +47,7 @@ def diary_create(request):
             diary.surprise = emotion["surprise"]
 
             # 주요감정 순위별 정렬
-            emotion.pop("sentence")
+            # emotion.pop("sentence")
             emotion_rank = sorted(emotion, key=lambda x: emotion[x], reverse=True)
             diary.primary_emotion = (
                 emotion_rank[0] if emotion_rank[0] != ("neutral") else emotion_rank[1]
@@ -85,7 +85,7 @@ def diary_modify(request, diary_id):
             diary.surprise = emotion["surprise"]
 
             # 주요감정 순위별 정렬
-            emotion.pop("sentence")
+            # emotion.pop("sentence")
             emotion_rank = sorted(emotion, key=lambda x: emotion[x], reverse=True)
             diary.primary_emotion = (
                 emotion_rank[0] if emotion_rank[0] != ("neutral") else emotion_rank[1]
@@ -97,19 +97,30 @@ def diary_modify(request, diary_id):
     else:
         form = DiaryForm(instance=diary)
 
-    emotion_emojis = {
-        "happiness": "😊",
-        "sadness": "😭",
-        "angry": "😡",
-        "disgust": "🤮",
-        "fear": "😨",
-        "surprise": "😳",
+    # emotion_emojis = {
+    #     "happiness": "😊",
+    #     "sadness": "😭",
+    #     "angry": "😡",
+    #     "disgust": "🤮",
+    #     "fear": "😨",
+    #     "surprise": "😳",
+    # }
+
+    emotion_pt = {
+        "neutral": int(diary.neutral * 100),
+        "happiness": int(diary.happiness * 100),
+        "sadness": int(diary.sadness * 100),
+        "angry": int(diary.angry * 100),
+        "disgust": int(diary.disgust * 100),
+        "fear": int(diary.fear * 100),
+        "surprise": int(diary.surprise * 100),
     }
     context = {
         "form": form,
         "diary": diary,
         "date": diary.create_date,
-        "primary_emotion": emotion_emojis[diary.primary_emotion],
+        # "primary_emotion": emotion_emojis[diary.primary_emotion],
+        "emotion_pt": emotion_pt,
     }
     return render(request, "haru/diary_form.html", context)
 

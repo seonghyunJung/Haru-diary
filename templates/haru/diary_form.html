@@ -8,9 +8,20 @@
             <!-- 오류표시 End -->
             <div class="mb-3">
                 <h4 class="mt-5">{{ date }}</h4>
-                {% if primary_emotion %}
-                    <h5 style="color: gray;">감정분석 결과 : <span style="font-size:200%">{{ primary_emotion }}</span>
-                    </h5>{% endif %}
+                {#                {% if primary_emotion %}#}
+                {#                    <h5 style="color: gray;">감정분석 결과 : <span style="font-size:200%">{{ primary_emotion }}</span>#}
+                {#                    </h5>{% endif %}#}
+                {% if emotion_pt %}
+                    <h5 style="color: gray;">감정분석 결과:
+                        <span style="color: rgba(195, 192, 187, 1)">중립({{ emotion_pt.neutral }}%), </span>
+                        <span style="color: rgba(54, 162, 235, 1)">😊 행복({{ emotion_pt.happiness }}%)</span>,
+                        <span style="color: rgba(255, 206, 86, 1)">😭 슬픔({{ emotion_pt.sadness }}%)</span>,
+                        <span style="color: rgba(255, 99, 132, 1)">😡 분노({{ emotion_pt.angry }}%)</span>,
+                        <span style="color: rgba(153, 102, 255, 1)">🤮 혐오({{ emotion_pt.disgust }}%), </span>
+                        <span style="color: rgba(75, 192, 192, 1)">😨 공포({{ emotion_pt.fear }}%), </span>
+                        <span style="color: rgba(255, 159, 64, 1)">😳 놀람({{ emotion_pt.surprise }}%)</span>
+                    </h5>
+                {% endif %}
                 <textarea class="form-control" name="content" id="content" rows="20" style="resize: none"
                           placeholder="오늘 하루를 기록해주세요.">{{ form.content.value|default_if_none:'' }}</textarea>
             </div>
@@ -38,7 +49,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('button').click(function () {
-                $('#overlay').fadeIn().delay(2000).fadeOut();
+                $('#overlay').fadeIn().delay(50000).fadeOut();
             });
         });
         const delete_elements = document.getElementsByClassName("delete");
