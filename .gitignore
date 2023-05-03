@@ -2,6 +2,8 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=django
 
 ### Django ###
+.idea
+.github/ISSUE_TEMPLATE
 *.log
 *.pot
 *.pyc
@@ -11,6 +13,8 @@ db.sqlite3
 db.sqlite3-journal
 media
 secrets.json
+poetry.lock
+pyproject.toml
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.
