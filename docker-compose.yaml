@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  db:
+    platform: linux/amd64
+    image: postgres
+    container_name: postgres
+    environment:
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+    env_file:
+      - ./.env.postgres
+    networks:
+      some_network:
+  web:
+    platform: linux/amd64
+    # 현재 폴더에 있는 것들을 사용해 빌드하겠다.
+    build: .
+    container_name: haru
+    command: >
+      sh -c "python manage.py makemigrations &&
+              python manage.py migrate &&
+              python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - 8000:8000
+    working_dir: /code/
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.local
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+    networks:
+      some_network:
+
+networks:
+  some_network:
