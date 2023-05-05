@@ -6,8 +6,13 @@ services:
     build: ./nginx
     ports:
       - 80:80
+    volumes:
+      - ./static:/usr/src/app/static
+      - ./media:/usr/src/app/image
     depends_on:
       - web
+    networks:
+      some_network:
   db:
     platform: linux/amd64
     image: postgres
