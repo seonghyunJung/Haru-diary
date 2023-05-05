@@ -27,12 +27,12 @@
             </div>
             <div class="d-grid">
                 {% if form.content.value %}
-                    <button type="submit" class="btn btn-primary">수정</button>
+                    <button type="submit" class="btn btn-primary" id="model">수정</button>
                     <a href="javascript:void(0)" class="delete btn btn-outline-secondary"
                        data-uri="{% url 'haru:diary_delete' diary.id %}">삭제</a>
                     {#                    <a href="{% url 'haru:diary_delete' diary.id %}" class="btn btn-secondary">삭제</a>#}
                 {% else %}
-                    <button type="submit" class="btn btn-primary">저장</button>
+                    <button type="submit" class="btn btn-primary" id="model">저장</button>
                 {% endif %}
 
 
@@ -48,7 +48,7 @@
 {% block script %}
     <script type="text/javascript">
         $(document).ready(function () {
-            $('button').click(function () {
+            $('#model').click(function () {
                 $('#overlay').fadeIn().delay(50000).fadeOut();
             });
         });
