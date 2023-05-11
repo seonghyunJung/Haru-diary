@@ -8,8 +8,8 @@
 [졸업 프로젝트 링크](https://github.com/CSID-DGU/2022-1-CECD3-FRIDAY-5) <br/>
 
 ### 개발동기
-졸업 프로젝트에서 팀장 및 인공지능 모델 부분을 맡았었는데 개인적으로 프론트엔드 부분과 백엔드 부분을 더 잘 알고 진행했으면 좋았을 걸 하는 아쉬움이 남았습니다.
-최근에 공부하고 있는 Django를 이용해 직접 웹서비스 형태로 구현해 보았습니다.
+졸업 프로젝트에서 팀장 및 인공지능 모델 부분을 맡았었는데 프론트엔드 부분과 백엔드 부분을 더 잘 알고 진행했으면 좋았을 걸 하는 아쉬움이 남았습니다. <br/>
+그래서 최근에 공부하고 있는 Django를 이용해 프론트부터 백까지 모든 부분을 직접 웹서비스 형태로 구현해 보았습니다.
 
 
 ----------------------------
@@ -29,29 +29,44 @@
 
 ----------------------------
 
-### 기능 설명
-#### 로그인 화면
-<img width="1512" alt="image" src="https://github.com/seonghyunJung/Haru-diary/assets/76807684/d0ca5172-d993-4dc3-8720-2a41c741513e">
-<br/>
+<img width="1512" alt="image" src="https://github.com/seonghyunJung/Haru-diary/assets/76807684/d0ca5172-d993-4dc3-8720-2a41c741513e"> <br/>
+<div align="center">[로그인 페이지]</div>
+<hr/>
 
-#### 회원가입 화면
-<img width="1512" alt="image" src="https://github.com/seonghyunJung/Haru-diary/assets/76807684/71f78bee-6d90-49ee-a4b8-445c3c2b8232">
-<br/>
 
-#### 일기작성 화면
-<img width="1512" alt="image" src="https://github.com/seonghyunJung/Haru-diary/assets/76807684/3968796e-f67f-4098-984e-e60aa2adeaa2">
-<br/>
+<img width="1512" alt="image" src="https://github.com/seonghyunJung/Haru-diary/assets/76807684/71f78bee-6d90-49ee-a4b8-445c3c2b8232"> <br/>
+<div align="center">[회원가입 페이지]</div>
+<hr/>
 
-#### 일기 분석 완료 화면
-<img width="1512" alt="image" src="https://github.com/seonghyunJung/Haru-diary/assets/76807684/1aa0396c-1414-4e95-9930-ca8440559ab1">
-<br/>
 
-#### 캘린더 화면
-<img width="1512" alt="image" src="https://github.com/seonghyunJung/Haru-diary/assets/76807684/1e779e96-5917-45cf-b23f-a28674ab3e59">
+<img width="1512" alt="image" src="https://github.com/seonghyunJung/Haru-diary/assets/76807684/3968796e-f67f-4098-984e-e60aa2adeaa2"> <br/>
+<div align="center">[일기작성 페이지]</div>
 <br/>
+* 일기를 쓰고 저장을 누르면 AI가 해당 일기의 감정을 분석합니다.
+<hr/>
 
-#### 통계확인 화면
-<img width="1512" alt="image" src="https://github.com/seonghyunJung/Haru-diary/assets/76807684/310a07db-f1c7-4acd-b899-ed22a8c663ae">
+
+<img width="1512" alt="image" src="https://github.com/seonghyunJung/Haru-diary/assets/76807684/1aa0396c-1414-4e95-9930-ca8440559ab1"> <br/>
+<div align="center">[일기 감성분석]</div>
+<br/>
+* 7 감정의 분포를 보여줍니다.
+<hr/>
+
+
+<img width="1512" alt="image" src="https://github.com/seonghyunJung/Haru-diary/assets/76807684/1e779e96-5917-45cf-b23f-a28674ab3e59"> <br/>
+<div align="center">[캘린더 페이지]</div>
+<br/>
+* 캘린더 페이지에서는 이전에 작성했던 각 일기의 주요 감정을 이모지 형태로 확인할 수 있습니다. <br/>
+* 이모지를 클릭하면 해당 날짜에 작성한 일기를 확인, 수정, 삭제할 수 있습니다. 
+<hr/>
+
+
+<img width="1512" alt="image" src="https://github.com/seonghyunJung/Haru-diary/assets/76807684/310a07db-f1c7-4acd-b899-ed22a8c663ae"> <br/>
+<div align="center">[통계 페이지]</div>
+<br/>
+* 통계 페이지에서는 보고싶은 날짜 범위의 감정 추이를 막대 그래프 형태로 한눈에 확인할 수 있습니다. <br/>
+* 왼쪽 상단의 날짜 부분을 클릭하여 달력 위젯을 통해 원하는 날짜 범위를 선택할 수 있습니다.
 
 
 ----------------------------
+
