@@ -1,0 +1,55 @@
+version: "3.9"
+
+services:
+  nginx:
+    platform: linux/amd64
+    build: ./nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./static:/usr/src/app/static
+      - ./media:/usr/src/app/image
+    depends_on:
+      - web
+    networks:
+      some_network:
+  db:
+    platform: linux/amd64
+    image: postgres
+    container_name: postgres
+    environment:
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+      - TZ=Asia/Seoul
+    env_file:
+      - ./.env.postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      some_network:
+  web:
+    platform: linux/amd64
+    # 현재 폴더에 있는 것들을 사용해 빌드하겠다.
+    build: .
+    container_name: haru
+    command: >
+      sh -c "python manage.py makemigrations &&
+              python manage.py migrate &&
+              gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+
+    ports:
+      - 8000:8000
+    expose:
+      - 8000
+    working_dir: /code/
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.prod
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+    networks:
+      some_network:
+networks:
+  some_network:
